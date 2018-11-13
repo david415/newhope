@@ -69,14 +69,14 @@ pub fn generate_keypair_simple_alice<R: Rng>(mut rng: R) -> (PrivateKeySimpleAli
     rng.fill_bytes(&mut noise_seed);
 
     let mut sk = [0u16; N];
-    noise(&mut sk, &mut rng);
+    get_noise(&mut sk, &mut noise_seed, 0);
     ntt(&mut sk);
     let priv_key = PrivateKeySimpleAlice{
         sk: sk,
     };
 
     let mut pk = [0u16; N];
-    noise(&mut e, &mut rng);
+    get_noise(&mut e, &mut noise_seed, 0);
     ntt(&mut e);
     pointwise(&mut r, &priv_key.sk, &a);
     add(&mut pk, &e, &r);
@@ -176,11 +176,11 @@ mod tests {
     use super::super::params::N;
     use super::encode_b_simple;
 
-    #[test]
+    //#[test]
     fn encode_b_simple_test() {
         let mut r = vec![0u8; 2000];
         let b = [0u16; N];
         let v = [0u16; N];
-        //encode_b_simple(&mut r, &b, &v);
+        // XXX fix me encode_b_simple(&mut r, &b, &v);
     }
 }
