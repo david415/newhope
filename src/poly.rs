@@ -150,10 +150,10 @@ pub(crate) fn get_noise(p: &mut [u16; N], seed: &mut [u8; SEEDBYTES], nonce: u8)
     cipher.xor_read(&mut buf)?;
     // XXX todo: reset cipher?
 
-    for i in 0..N-1 {
+    for i in 0..N {
         let t = LittleEndian::read_u32(&buf[4*i..]);
         let mut d: u32 = 0;
-        for j in 0..8-1 {
+        for j in 0..8 {
             d += (t >> j) & 0x01010101;
         }
         let a = ((d >> 8) & 0xff) + (d & 0xff);

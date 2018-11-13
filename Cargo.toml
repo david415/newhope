@@ -13,5 +13,10 @@ chacha = "^0.2"
 byteorder = "1.0"
 clear_on_drop = "0.2.3"
 
+[dev-dependencies]
+rand = "^0.4.2"
+rustc-serialize = "0.3"
+byteorder = "1.2.7"
+
 [features]
 tor = []

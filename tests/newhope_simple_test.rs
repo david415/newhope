@@ -9,7 +9,7 @@ use newhope::simple::{generate_keypair_simple_alice, key_exchange_simple_bob,
                    key_exchange_simple_alice};
 
 
-#[test]
+//#[test]
 fn test_simple_integration() {
     let mut rng = OsRng::new().unwrap();
     for i in 0..1024-1 {

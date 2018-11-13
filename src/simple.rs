@@ -33,14 +33,14 @@ fn decode_b_simple(b: &mut [u16; N], v: &mut [u16; N], r: &[u8]) -> Vec<u8> {
 
 fn encode_a(r: &mut [u8], pk: &[u16; N], seed: &[u8; SEEDBYTES]) {
     poly_tobytes(pk, r);
-    for i in 0..SEEDBYTES-1 {
+    for i in 0..SEEDBYTES {
         r[POLY_BYTES+i] = seed[i];
     }
 }
 
 fn decode_a(pk: &mut [u16; N], seed: &mut [u8; SEEDBYTES], r: &[u8]) {
     poly_frombytes(r, pk);
-    for i in 0..seed.len()-1 {
+    for i in 0..seed.len() {
         seed[i] = r[POLY_BYTES+i];
     }
 }
@@ -167,4 +167,20 @@ pub fn key_exchange_simple_alice(pub_public_key: &mut PublicKeySimpleBob, alice_
     memwipe(&mut shared_key);
 
     mu
+}
+
+
+#[cfg(test)]
+mod tests {
+
+    use super::super::params::N;
+    use super::encode_b_simple;
+
+    #[test]
+    fn encode_b_simple_test() {
+        let mut r = vec![0u8; 2000];
+        let b = [0u16; N];
+        let v = [0u16; N];
+        //encode_b_simple(&mut r, &b, &v);
+    }
 }
