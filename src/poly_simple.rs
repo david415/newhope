@@ -161,7 +161,6 @@ mod tests {
         let expected = String::from("1f23a2b5b3d04a20f590195d995cec494365a51bd2967e800ae69319d8b5cf3fc76f93fc3d78b6012de5c39a949ca64a82fd069e63953b614467a608eb700a690a78e4e9bef765bcfc0b04a29874a02dac7d662b062243de41e082f44a745c0a7b54e7ad9685b3646ea91ee8e489f87eba9dddd54a5e15ac7a19e4449ea41928c1cb03f03adcd3ea77169927461abd2fceb3f45de7a17c100460e2ed45f8525c887dea567e2f780ffe6d42c2aa181c89e67d330275ae497e8aa04d4627cfb40419f489d9e9359c5036c0e7c51dcc22c0155705fc4ea926248ef569401a4bef1882afdaeb39129ac378ef6476c7561e8510ac04990b4883ecff0eeffa3c16460af06899929dc9a8a5ae973a436a0c54d9199295da8da2ef4f6c34a1ad659fbca47903d96788fa8e52f412d9c3f66fdbd5002e460b3b67a252561f02bf773fd63dcf7c3aa915e14fbf1038b0007e880668f895601371d039c320a5689eb2d849754b0be413c9f136bf1ae7cdb1d25af282a13ebdc0726c31a456e96960d75229540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
         let input_bytes = input.from_hex().unwrap();
         let expected_bytes = expected.from_hex().unwrap();
-
         let mut r = vec![0u8; 500];
         let mut p = vec![];
 
@@ -172,11 +171,11 @@ mod tests {
         let mut p_array = [0u16; 1024];
         p_array.copy_from_slice(&p);
         compress(&mut r, &p_array);
-        //println!("ar {}\n", r.to_hex());
         assert_eq!(r, expected_bytes);
-
-        //let mut new_poly = [0u16; N];
-        //decompress(&r, &mut new_poly);
-        //assert_eq!(&p_array[..], &new_poly[..]);
+        let mut new_poly = [0u16; N];
+        decompress(&r, &mut new_poly);
+        let mut new_r = vec![0u8; 500];
+        compress(&mut new_r, &p_array);
+        assert_eq!(&new_r, &r);
     }
 }
