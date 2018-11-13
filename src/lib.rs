@@ -3,17 +3,22 @@
 extern crate rand;
 extern crate byteorder;
 extern crate tiny_keccak;
+extern crate chacha;
+extern crate clear_on_drop;
 
 #[cfg(feature = "tor")] pub mod batcher;
 mod reduce;
 mod ntt;
 mod error_correction;
 pub mod poly;
+pub mod poly_simple;
 pub mod params;
 pub mod newhope;
+pub mod simple;
 
 use rand::Rng;
 use tiny_keccak::Keccak;
+use chacha::ChaCha;
 pub use params::{
     N, Q,
     POLY_BYTES,

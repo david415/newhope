@@ -1,10 +1,18 @@
+
+extern crate chacha;
+
+use std::ptr;
 use rand::Rng;
 use byteorder::{ ByteOrder, LittleEndian };
 use tiny_keccak::Keccak;
+use chacha::ChaCha as ChaCha20;
+use chacha::KeyStream;
+
 use ::params::{
     N, Q,
     PSIS_BITREV_MONTGOMERY, OMEGAS_MONTGOMERY,
-    PSIS_INV_MONTGOMERY, OMEGAS_INV_MONTGOMERY
+    PSIS_INV_MONTGOMERY, OMEGAS_INV_MONTGOMERY,
+    SEEDBYTES,
 };
 use ::reduce::{ montgomery_reduce, barrett_reduce };
 use ::ntt::{ bitrev_vector, mul_coefficients, ntt as fft };
@@ -131,6 +139,30 @@ pub(crate) fn uniform(a: &mut [u16], nonce: &[u8]) {
     while !discardtopoly(a, &buf) {
         xof.squeeze(&mut buf);
     }
+}
+
+pub(crate) fn get_noise(p: &mut [u16; N], seed: &mut [u8; SEEDBYTES], nonce: u8) -> Result<(), chacha::Error>{
+    let mut buf = [0u8; 4 * N];
+    let mut n = [0u8; 8];
+
+    n[0] = nonce;
+    let mut cipher = ChaCha20::new_chacha12(seed, &n);
+    cipher.xor_read(&mut buf)?;
+    // XXX todo: reset cipher?
+
+    for i in 0..N-1 {
+        let t = LittleEndian::read_u32(&buf[4*i..]);
+        let mut d: u32 = 0;
+        for j in 0..8-1 {
+            d += (t >> j) & 0x01010101;
+        }
+        let a = ((d >> 8) & 0xff) + (d & 0xff);
+        let b = (d >> 24) + ((d >> 16) & 0xff);
+        p[i] = a as u16 + Q as u16 - b as u16;
+    }
+
+    // XXX memwipe(&mut buf);
+    Ok(())
 }
 
 pub(crate) fn noise<R: Rng>(r: &mut [u16], rng: &mut R) {

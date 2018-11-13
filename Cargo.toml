@@ -9,7 +9,9 @@ license = "MIT"
 [dependencies]
 rand = "0.4"
 tiny-keccak = "^1.4"
+chacha = "^0.2"
 byteorder = "1.0"
+clear_on_drop = "0.2.3"
 
 [features]
 tor = []
